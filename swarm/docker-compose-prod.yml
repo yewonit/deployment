@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  attendance-dev:
+  attendance:
     image: coramdeoyouth/attendance:prod
     deploy:
       replicas: 3
