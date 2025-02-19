@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   attendance-dev:
-    image: coramdeoyouth/attendance-dev
+    image: coramdeoyouth/attendance:dev
     deploy:
       replicas: 1
       restart_policy:
