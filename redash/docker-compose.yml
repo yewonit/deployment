@@ -1,60 +1,18 @@
-x-redash-service: &redash-service
-  image: redash/redash:latest
-  depends_on:
-    - postgres
-    - redis
-  env_file: /opt/redash/env
-  restart: always
+version: "3.8"
 services:
-  server:
-    <<: *redash-service
-    command: server
+  redash:
+    image: redash/redash:latest
+    depends_on:
+      - postgres
+      - redis
     ports:
       - "5000:5000"
     environment:
       REDASH_WEB_WORKERS: 3
-  scheduler:
-    <<: *redash-service
-    command: scheduler
-    depends_on:
-      - server
-  scheduled_worker:
-    <<: *redash-service
-    command: worker
-    depends_on:
-      - server
-    environment:
-      QUEUES: "scheduled_queries,schemas"
-      WORKERS_COUNT: 1
-  adhoc_worker:
-    <<: *redash-service
-    command: worker
-    depends_on:
-      - server
-    environment:
-      QUEUES: "queries"
-      WORKERS_COUNT: 1
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
+      REDASH_LOG_LEVEL: "INFO"
   postgres:
-    image: pgautoupgrade/pgautoupgrade:latest
-    env_file: /opt/redash/env
-    volumes:
-      - /opt/redash/postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-  nginx:
-    image: redash/nginx:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - server
-    links:
-      - server:redash
-    restart: always
-  worker:
-    <<: *redash-service
-    command: worker
+    image: postgres:latest
     environment:
-      QUEUES: "periodic,emails,default"
-      WORKERS_COUNT: 1
+      POSTGRES_PASSWORD: coramdeo138
+  redis:
+    image: redis:latest
