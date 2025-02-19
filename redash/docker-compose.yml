@@ -1,5 +1,5 @@
 x-redash-service: &redash-service
-  image: redash/redash:__TAG__
+  image: redash/redash:latest
   depends_on:
     - postgres
     - redis
