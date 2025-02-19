@@ -10,6 +10,9 @@ services:
         delay: 3s
         max_attempts: 5
         window: 30s
+      update_config:
+        parallelism: 1
+        delay: 10s  # 롤링 업데이트 간격
     ports:
       - "8000:8000"
     environment:
