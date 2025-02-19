@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  attendance-dev:
+    image: coramdeoyouth/attendance
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 5
+        window: 30s
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: production
