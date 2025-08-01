@@ -8,7 +8,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from db import create_database_connection, test_connection
-
+from tables.user import migrate_user_table
 # .env 파일 로드
 load_dotenv()
 
@@ -92,11 +92,7 @@ def migrate_data(before, after):
     """
     print("\n🔄 데이터 마이그레이션을 시작합니다...")
     
-    # TODO: 실제 마이그레이션 로직 구현
-    # 예시:
-    # 1. 소스 테이블에서 데이터 조회
-    # 2. 데이터 변환/정제
-    # 3. 타겟 테이블에 데이터 삽입
+    user_result = migrate_user_table(before, after)
     
     pass
 
