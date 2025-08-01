@@ -9,6 +9,7 @@ import sys
 from dotenv import load_dotenv
 from db import create_database_connection, test_connection
 from tables.user import migrate_user_table
+from tables.image import migrate_image_table
 # .env 파일 로드
 load_dotenv()
 
@@ -83,18 +84,16 @@ def main():
 
 
 def migrate_data(before, after):
-    """
-    실제 데이터 마이그레이션을 수행하는 함수
-    
-    Args:
-        before: 소스 데이터베이스 연결 객체
-        after: 타겟 데이터베이스 연결 객체
-    """
     print("\n🔄 데이터 마이그레이션을 시작합니다...")
     
     user_result = migrate_user_table(before, after)
+    if not user_result:
+        print("❌ User 테이블 마이그레이션 실패")
     
-    pass
+    image_result = migrate_image_table(before, after)
+    if not image_result:
+        print("❌ Image 테이블 마이그레이션 실패")
+    
 
 
 if __name__ == "__main__":

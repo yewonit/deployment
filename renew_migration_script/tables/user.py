@@ -90,7 +90,7 @@ def migrate_user_table(before: DatabaseConnection, after: DatabaseConnection):
             print(f"✅ {rows_affected}개의 user 레코드가 성공적으로 마이그레이션되었습니다.")   
             return True
         else:
-            print("❌ User 데이터 삽입에 실패했습니다.")
+            print("영향받은 레코드가 없습니다.")
             return False
             
     except Exception as e:
