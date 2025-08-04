@@ -39,7 +39,7 @@ def map_user_data(old_user: Dict[str, Any]) -> Dict[str, Any]:
         'phone_number': old_user['phone_number'],
         'is_new_member': old_user['is_new_member'],
         'is_long_term_absentee': old_user['is_long_term_absentee'],
-        'is_deleted': old_user['is_deleted'],
+        'is_deleted': 0,
         'created_at': old_user['created_at'],
         'updated_at': old_user['updated_at']
     }

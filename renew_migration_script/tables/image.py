@@ -10,9 +10,9 @@ def map_image_data(old_image: Dict[str, Any]) -> Dict[str, Any]:
     mapped_data = {
       'id': old_image['id'],
       'activity_id': old_image['activity_instance_id'],
-      'name': old_image['file_name'],
-      'path': old_image['file_path'],
-      'is_deleted': old_image['is_deleted'],
+      'name': old_image['name'],
+      'path': old_image['path'],
+      'is_deleted': 0,
       'created_at': old_image['created_at'],
       'updated_at': old_image['updated_at']
     }
@@ -26,7 +26,13 @@ def migrate_image_table(before: DatabaseConnection, after: DatabaseConnection):
     try:
         before_image_data = before.execute_query(
         """
-        SELECT * 
+        SELECT 
+          file.id as id,
+          activity_instance_has_file.activity_instance_id as activity_id,
+          file.file_name as name,
+          file.file_path as path,
+          file.created_at as created_at,
+          file.updated_at as updated_at
         FROM file 
         inner join activity_instance_has_file 
         on file.id = activity_instance_has_file.file_id 
@@ -41,7 +47,7 @@ def migrate_image_table(before: DatabaseConnection, after: DatabaseConnection):
         mapped_images = list(map(map_image_data, before_image_data))
       
         insert_query = """
-        INSERT INTO image (
+        INSERT INTO activity_image (
           id, activity_id, name, path, is_deleted, created_at, updated_at
         ) VALUES (
           %(id)s, %(activity_id)s, %(name)s, %(path)s, %(is_deleted)s, %(created_at)s, %(updated_at)s

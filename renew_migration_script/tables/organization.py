@@ -12,7 +12,7 @@ def map_organization_data(old_organization: Dict[str, Any]) -> Dict[str, Any]:
       'season_id': old_organization['season_id'],
       'organization_code': old_organization['organization_code'],
       'upper_organization_id': old_organization['upper_organization_id'],
-      'is_deleted': old_organization['is_deleted'],
+      'is_deleted': 0,
       'created_at': old_organization['created_at'],
       'updated_at': old_organization['updated_at']
     }
