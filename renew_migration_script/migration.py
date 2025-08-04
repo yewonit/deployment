@@ -93,7 +93,10 @@ def migrate_data(before, after):
     image_result = migrate_image_table(before, after)
     if not image_result:
         print("❌ Image 테이블 마이그레이션 실패")
-    
+        
+    organization_result = migrate_organization_table(before, after)
+    if not organization_result:
+        print("❌ Organization 테이블 마이그레이션 실패")
 
 
 if __name__ == "__main__":
