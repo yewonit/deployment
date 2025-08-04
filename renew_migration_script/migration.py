@@ -12,6 +12,9 @@ from tables.user import migrate_user_table
 from tables.image import migrate_image_table
 from tables.organization import migrate_organization_table
 from tables.activity import migrate_activity_table
+from tables.attendance import migrate_attendance_table
+from tables.user_role import migrate_user_role_table
+
 
 # .env 파일 로드
 load_dotenv()
@@ -105,6 +108,14 @@ def migrate_data(before, after):
     if not activity_result:
         print("❌ Activity 테이블 마이그레이션 실패")
 
+    attendance_result = migrate_attendance_table(before, after)
+    if not attendance_result:
+        print("❌ Attendance 테이블 마이그레이션 실패")
+
+    user_role_result = migrate_user_role_table(before, after)
+    if not user_role_result:
+        print("❌ UserRole 테이블 마이그레이션 실패")
+    
 if __name__ == "__main__":
     success = main()
     if success:
