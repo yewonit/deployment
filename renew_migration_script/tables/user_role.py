@@ -56,7 +56,7 @@ def migrate_user_role_table(before: DatabaseConnection, after: DatabaseConnectio
           id, user_id, role_id, organization_id, created_at, updated_at
         ) VALUES (
           %(id)s, %(user_id)s, %(role_id)s, %(organization_id)s, %(created_at)s, %(updated_at)s
-        )
+        ) ON DUPLICATE KEY UPDATE id=id
         """
         
         rows_affected = after.execute_many(insert_query, mapped_user_roles)

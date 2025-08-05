@@ -42,7 +42,7 @@ def migrate_organization_table(before: DatabaseConnection, after: DatabaseConnec
           id, season_id, organization_code, upper_organization_id, is_deleted, created_at, updated_at
         ) VALUES (
           %(id)s, %(season_id)s, %(organization_code)s, %(upper_organization_id)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
-        )
+        ) ON DUPLICATE KEY UPDATE id=id
         """
         
         rows_affected = after.execute_many(insert_query, mapped_organizations)

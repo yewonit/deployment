@@ -55,7 +55,7 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
           id, name, description, activity_category, organization_id, start_time, end_time, is_deleted, created_at, updated_at
         ) VALUES (
           %(id)s, %(name)s, %(description)s, %(activity_category)s, %(organization_id)s, %(start_time)s, %(end_time)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
-        )
+        ) ON DUPLICATE KEY UPDATE id=id
         """
         
         rows_affected = after.execute_many(insert_query, mapped_activities)

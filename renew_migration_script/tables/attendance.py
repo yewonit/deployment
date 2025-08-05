@@ -49,7 +49,7 @@ def migrate_attendance_table(before: DatabaseConnection, after: DatabaseConnecti
           id, user_id, activity_id, attendance_status, created_at, updated_at
         ) VALUES (
           %(id)s, %(user_id)s, %(activity_id)s, %(attendance_status)s, %(created_at)s, %(updated_at)s
-        )
+        ) ON DUPLICATE KEY UPDATE id=id
         """
         
         rows_affected = after.execute_many(insert_query, mapped_attendances)

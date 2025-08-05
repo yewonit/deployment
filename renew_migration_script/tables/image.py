@@ -51,7 +51,7 @@ def migrate_image_table(before: DatabaseConnection, after: DatabaseConnection):
           id, activity_id, name, path, is_deleted, created_at, updated_at
         ) VALUES (
           %(id)s, %(activity_id)s, %(name)s, %(path)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
-        )
+        ) ON DUPLICATE KEY UPDATE id=id
         """
       
         rows_affected = after.execute_many(insert_query, mapped_images)
