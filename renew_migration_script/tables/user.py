@@ -44,10 +44,6 @@ def map_user_data(old_user: Dict[str, Any]) -> Dict[str, Any]:
         'updated_at': old_user['updated_at']
     }
     
-    # None 값이나 빈 문자열 처리
-    if not mapped_data['full_name']:
-        mapped_data['full_name'] = mapped_data['login_name']  # fallback
-    
     return mapped_data
 
 
@@ -74,12 +70,12 @@ def migrate_user_table(before: DatabaseConnection, after: DatabaseConnection):
         # 3. 새로운 테이블에 삽입할 쿼리 준비
         insert_query = """
         INSERT INTO user (
-            user_id, full_name, email_address, login_name, 
-            status, created_date, updated_date
+            id, name, name_suffix, email, password, gender, birth_date,
+            phone_number, is_new_member, is_long_term_absentee, is_deleted, created_at, updated_at
         ) VALUES (
-            %(user_id)s, %(full_name)s, %(email_address)s, %(login_name)s,
-            %(status)s, %(created_date)s, %(updated_date)s
-        )
+            %(id)s, %(name)s, %(name_suffix)s, %(email)s, %(password)s, %(gender)s, %(birth_date)s,
+            %(phone_number)s, %(is_new_member)s, %(is_long_term_absentee)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
+        ) ON DUPLICATE KEY UPDATE id=id
         """
         
         # 4. 배치 삽입 실행

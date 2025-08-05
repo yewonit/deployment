@@ -9,7 +9,7 @@ def map_image_data(old_image: Dict[str, Any]) -> Dict[str, Any]:
     
     mapped_data = {
       'id': old_image['id'],
-      'activity_id': old_image['activity_instance_id'],
+      'activity_id': old_image['activity_id'],
       'name': old_image['name'],
       'path': old_image['path'],
       'is_deleted': 0,
