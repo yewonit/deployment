@@ -1,0 +1,1 @@
+ssh -i ./isaac-keypair.pem -N -L 3306:localhost:3306 ec2-user@15.164.45.130

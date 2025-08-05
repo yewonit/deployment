@@ -14,7 +14,7 @@ from tables.organization import migrate_organization_table
 from tables.activity import migrate_activity_table
 from tables.attendance import migrate_attendance_table
 from tables.user_role import migrate_user_role_table
-
+from tables.test import test
 
 # .env 파일 로드
 load_dotenv()
@@ -92,29 +92,33 @@ def main():
 def migrate_data(before, after):
     print("\n🔄 데이터 마이그레이션을 시작합니다...")
     
-    user_result = migrate_user_table(before, after)
-    if not user_result:
-        print("❌ User 테이블 마이그레이션 실패")
+    test_result = test(before, after)
+    if not test_result:
+        print("❌ Test 테이블 마이그레이션 실패")
     
-    image_result = migrate_image_table(before, after)
-    if not image_result:
-        print("❌ Image 테이블 마이그레이션 실패")
+    # user_result = migrate_user_table(before, after)
+    # if not user_result:
+    #     print("❌ User 테이블 마이그레이션 실패")
+    
+    # image_result = migrate_image_table(before, after)
+    # if not image_result:
+    #     print("❌ Image 테이블 마이그레이션 실패")
         
-    organization_result = migrate_organization_table(before, after)
-    if not organization_result:
-        print("❌ Organization 테이블 마이그레이션 실패")
+    # organization_result = migrate_organization_table(before, after)
+    # if not organization_result:
+    #     print("❌ Organization 테이블 마이그레이션 실패")
 
-    activity_result = migrate_activity_table(before, after)
-    if not activity_result:
-        print("❌ Activity 테이블 마이그레이션 실패")
+    # activity_result = migrate_activity_table(before, after)
+    # if not activity_result:
+    #     print("❌ Activity 테이블 마이그레이션 실패")
 
-    attendance_result = migrate_attendance_table(before, after)
-    if not attendance_result:
-        print("❌ Attendance 테이블 마이그레이션 실패")
+    # attendance_result = migrate_attendance_table(before, after)
+    # if not attendance_result:
+    #     print("❌ Attendance 테이블 마이그레이션 실패")
 
-    user_role_result = migrate_user_role_table(before, after)
-    if not user_role_result:
-        print("❌ UserRole 테이블 마이그레이션 실패")
+    # user_role_result = migrate_user_role_table(before, after)
+    # if not user_role_result:
+    #     print("❌ UserRole 테이블 마이그레이션 실패")
     
 if __name__ == "__main__":
     success = main()
