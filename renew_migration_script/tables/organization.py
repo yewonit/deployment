@@ -10,7 +10,7 @@ def map_organization_data(old_organization: Dict[str, Any]) -> Dict[str, Any]:
     mapped_data = {
       'id': old_organization['id'],
       'season_id': old_organization['season_id'],
-      'organization_code': old_organization['organization_code'],
+      'name': old_organization['organization_name'].replace('코람데오_', ''),
       'upper_organization_id': old_organization['upper_organization_id'],
       'is_deleted': 0,
       'created_at': old_organization['created_at'],
@@ -39,9 +39,9 @@ def migrate_organization_table(before: DatabaseConnection, after: DatabaseConnec
         
         insert_query = """
         INSERT INTO organization (
-          id, season_id, organization_code, upper_organization_id, is_deleted, created_at, updated_at
+          id, season_id, name, upper_organization_id, is_deleted, created_at, updated_at
         ) VALUES (
-          %(id)s, %(season_id)s, %(organization_code)s, %(upper_organization_id)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
+          %(id)s, %(season_id)s, %(name)s, %(upper_organization_id)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
         ) ON DUPLICATE KEY UPDATE id=id
         """
         

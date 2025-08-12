@@ -96,17 +96,17 @@ def migrate_data(before, after):
     # if not test_result:
     #     print("❌ Test 테이블 마이그레이션 실패")
     
-    user_result = migrate_user_table(before, after)
-    if not user_result:
-        print("❌ User 테이블 마이그레이션 실패")
+    # user_result = migrate_user_table(before, after)
+    # if not user_result:
+    #     print("❌ User 테이블 마이그레이션 실패")
     
     # image_result = migrate_image_table(before, after)
     # if not image_result:
     #     print("❌ Image 테이블 마이그레이션 실패")
         
-    # organization_result = migrate_organization_table(before, after)
-    # if not organization_result:
-    #     print("❌ Organization 테이블 마이그레이션 실패")
+    organization_result = migrate_organization_table(before, after)
+    if not organization_result:
+        print("❌ Organization 테이블 마이그레이션 실패")
 
     # activity_result = migrate_activity_table(before, after)
     # if not activity_result:

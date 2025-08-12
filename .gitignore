@@ -2,3 +2,5 @@
 .gitsecret/keys/random_seed
 !*.secret
 .DS_Store
+*.pyc
+.env
