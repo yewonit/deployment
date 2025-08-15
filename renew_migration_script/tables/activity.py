@@ -12,6 +12,7 @@ def map_activity_data(old_activity: Dict[str, Any]) -> Dict[str, Any]:
       'name': old_activity['name'],
       'description': old_activity['description'],
       'activity_category': '예배',
+      'location': old_activity['location'],
       'organization_id': old_activity['organization_id'],
       'start_time': old_activity['start_time'],
       'end_time': old_activity['end_time'],
@@ -33,6 +34,7 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
           activity_instance.id as id,
           activity.name as name,
           activity_instance.notes as description,
+          activity_instance.actual_location as location
           activity.organization_id as organization_id,
           activity_instance.start_datetime as start_time,
           activity_instance.end_datetime as end_time,
@@ -52,9 +54,9 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
         
         insert_query = """
         INSERT INTO activity (
-          id, name, description, activity_category, organization_id, start_time, end_time, is_deleted, created_at, updated_at
+          id, name, description, activity_category, location, organization_id, start_time, end_time, is_deleted, created_at, updated_at
         ) VALUES (
-          %(id)s, %(name)s, %(description)s, %(activity_category)s, %(organization_id)s, %(start_time)s, %(end_time)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
+          %(id)s, %(name)s, %(description)s, %(activity_category)s, %(location)s, %(organization_id)s, %(start_time)s, %(end_time)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
         ) ON DUPLICATE KEY UPDATE id=id
         """
         
