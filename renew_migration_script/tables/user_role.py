@@ -12,8 +12,10 @@ def map_user_role_data(old_user_role: Dict[str, Any]) -> Dict[str, Any]:
       role_id = 2
     elif old_user_role['role'] == '순장':
       role_id = 3
-    else:
+    elif old_user_role['role'] == 'EBS':
       role_id = 4
+    else:
+      role_id = 5
 
     mapped_data = {
       'id': old_user_role['id'],
