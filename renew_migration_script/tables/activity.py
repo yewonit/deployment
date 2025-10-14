@@ -34,7 +34,7 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
           activity_instance.id as id,
           activity.name as name,
           activity_instance.notes as description,
-          activity_instance.actual_location as location
+          activity_instance.actual_location as location,
           activity.organization_id as organization_id,
           activity_instance.start_datetime as start_time,
           activity_instance.end_datetime as end_time,
