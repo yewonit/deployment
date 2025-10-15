@@ -2,6 +2,12 @@ from db import DatabaseConnection
 from typing import List, Dict, Any
 from datetime import datetime
 
+def name_converter(name: str) -> str:
+    if name == '수요제자기도회':
+        return '수요청년예배'
+    elif name == '현장치유팀사역':
+        return '금요청년예배'
+
 def map_activity_data(old_activity: Dict[str, Any]) -> Dict[str, Any]:
     """
     이전 image 테이블 데이터를 새로운 image 테이블 구조에 맞게 변환합니다.
@@ -9,7 +15,7 @@ def map_activity_data(old_activity: Dict[str, Any]) -> Dict[str, Any]:
     
     mapped_data = {
       'id': old_activity['id'],
-      'name': old_activity['name'],
+      'name': name_converter(old_activity['name']),
       'description': old_activity['description'],
       'activity_category': '예배',
       'location': old_activity['location'],
