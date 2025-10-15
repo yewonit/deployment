@@ -1,4 +1,5 @@
 from db import DatabaseConnection
+from utils.progress import chunked, print_progress
 from typing import List, Dict, Any
 from datetime import datetime
 
@@ -78,12 +79,20 @@ def migrate_user_table(before: DatabaseConnection, after: DatabaseConnection):
         ) ON DUPLICATE KEY UPDATE id=id
         """
         
-        # 4. 배치 삽입 실행
+        # 4. 배치 삽입 실행 (프로그레스 바)
         print("💾 새로운 user 테이블에 데이터를 삽입합니다...")
-        rows_affected = after.execute_many(insert_query, mapped_users)
+        total = len(mapped_users)
+        affected_total = 0
+        batch_size = 1000
+        processed = 0
+        for batch in chunked(mapped_users, batch_size):
+            affected = after.execute_many(insert_query, batch) or 0
+            affected_total += affected
+            processed += len(batch)
+            print_progress(processed, total, prefix="user")
         
-        if rows_affected:
-            print(f"✅ {rows_affected}개의 user 레코드가 성공적으로 마이그레이션되었습니다.")   
+        if affected_total:
+            print(f"✅ {affected_total}개의 user 레코드가 성공적으로 마이그레이션되었습니다.")   
             return True
         else:
             print("영향받은 레코드가 없습니다.")

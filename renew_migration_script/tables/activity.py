@@ -1,4 +1,5 @@
 from db import DatabaseConnection
+from utils.progress import chunked, print_progress
 from typing import List, Dict, Any
 from datetime import datetime
 
@@ -66,10 +67,18 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
         ) ON DUPLICATE KEY UPDATE id=id
         """
         
-        rows_affected = after.execute_many(insert_query, mapped_activities)
+        total = len(mapped_activities)
+        affected_total = 0
+        batch_size = 1000
+        processed = 0
+        for batch in chunked(mapped_activities, batch_size):
+            affected = after.execute_many(insert_query, batch) or 0
+            affected_total += affected
+            processed += len(batch)
+            print_progress(processed, total, prefix="activity")
         
-        if rows_affected:
-            print(f"✅ {rows_affected}개의 activity 레코드가 성공적으로 마이그레이션되었습니다.")
+        if affected_total:
+            print(f"✅ {affected_total}개의 activity 레코드가 성공적으로 마이그레이션되었습니다.")
             return True
         else:
             print("영향받은 레코드가 없습니다.")
@@ -82,7 +91,7 @@ def migrate_activity_table(before: DatabaseConnection, after: DatabaseConnection
 
 def migrate_activity_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnection):
     """
-    최근 1개월 prod.activity 데이터를 dev.activity로 마이그레이션.
+    prod.activity의 모든 데이터를 dev.activity로 마이그레이션.
     - prod/dev 스키마 동일, 필드 1:1 복사
     - dev.organization에 없는 organization_id는 스킵
     """
@@ -91,12 +100,11 @@ def migrate_activity_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnecti
         dev_org_rows = dev.execute_query("SELECT id FROM organization") or []
         dev_org_ids = {row['id'] for row in dev_org_rows}
         
-        # 최근 1개월 데이터 조회 (created_at 기준)
+        # 전체 데이터 조회
         prod_activities = prod.execute_query(
             """
             SELECT id, name, description, activity_category, organization_id, start_time, end_time, is_deleted, created_at, updated_at
             FROM activity
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
             ORDER BY id
             """
         ) or []
@@ -120,8 +128,16 @@ def migrate_activity_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnecti
             %(id)s, %(name)s, %(description)s, %(activity_category)s, %(organization_id)s, %(start_time)s, %(end_time)s, %(is_deleted)s, %(created_at)s, %(updated_at)s
         ) ON DUPLICATE KEY UPDATE id=id
         """
-        affected = dev.execute_many(insert_sql, to_insert)
-        print(f"✅ activity 마이그레이션 완료: 삽입/갱신 {affected or 0}건, 조직 미존재로 스킵 {skipped_no_org}건")
+        total = len(to_insert)
+        affected_total = 0
+        batch_size = 1000
+        processed = 0
+        for batch in chunked(to_insert, batch_size):
+            affected = dev.execute_many(insert_sql, batch) or 0
+            affected_total += affected
+            processed += len(batch)
+            print_progress(processed, total, prefix="activity(prod->dev)")
+        print(f"✅ activity 마이그레이션 완료: 삽입/갱신 {affected_total}건, 조직 미존재로 스킵 {skipped_no_org}건")
         return True
     except Exception as e:
         print(f"❌ activity prod->dev 마이그레이션 오류: {e}")

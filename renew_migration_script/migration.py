@@ -23,7 +23,7 @@ def main():
     
     available_options = ["1", "2"]
     
-    option = input("1. renew 테이블로 마이그레이션\n2. prod db의 최근 한 달 데이터를 dev db로 마이그레이션\n")
+    option = input("1. renew 테이블로 마이그레이션\n2. prod db의 전체 데이터를 dev db로 마이그레이션\n")
     
     if option not in available_options:
         print("❌ 잘못된 옵션입니다.")

@@ -1,4 +1,5 @@
 from db import DatabaseConnection
+from utils.progress import chunked, print_progress
 from typing import List, Dict, Any
 from datetime import datetime
 
@@ -52,10 +53,18 @@ def migrate_attendance_table(before: DatabaseConnection, after: DatabaseConnecti
         ) ON DUPLICATE KEY UPDATE id=id
         """
         
-        rows_affected = after.execute_many(insert_query, mapped_attendances)
+        total = len(mapped_attendances)
+        affected_total = 0
+        batch_size = 1000
+        processed = 0
+        for batch in chunked(mapped_attendances, batch_size):
+            affected = after.execute_many(insert_query, batch) or 0
+            affected_total += affected
+            processed += len(batch)
+            print_progress(processed, total, prefix="attendance")
         
-        if rows_affected:
-            print(f"✅ {rows_affected}개의 attendance 레코드가 성공적으로 마이그레이션되었습니다.")
+        if affected_total:
+            print(f"✅ {affected_total}개의 attendance 레코드가 성공적으로 마이그레이션되었습니다.")
             return True
         else:
             print("영향받은 레코드가 없습니다.")
@@ -68,7 +77,7 @@ def migrate_attendance_table(before: DatabaseConnection, after: DatabaseConnecti
 
 def migrate_attendance_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnection):
     """
-    최근 1개월 prod.attendance 데이터를 dev.attendance로 마이그레이션.
+    prod.attendance의 모든 데이터를 dev.attendance로 마이그레이션.
     - prod/dev 스키마 동일, 필드 1:1 복사
     - dev.user에 없는 user_id는 스킵
     - dev.activity에 없는 activity_id는 스킵 (activity 스킵 시 해당 attendance도 모두 스킵)
@@ -84,7 +93,6 @@ def migrate_attendance_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnec
             """
             SELECT id, user_id, activity_id, attendance_status, created_at, updated_at
             FROM attendance
-            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
             ORDER BY id
             """
         ) or []
@@ -112,8 +120,16 @@ def migrate_attendance_prod_to_dev(prod: DatabaseConnection, dev: DatabaseConnec
             %(id)s, %(user_id)s, %(activity_id)s, %(attendance_status)s, %(created_at)s, %(updated_at)s
         ) ON DUPLICATE KEY UPDATE id=id
         """
-        affected = dev.execute_many(insert_sql, to_insert)
-        print(f"✅ attendance 마이그레이션 완료: 삽입/갱신 {affected or 0}건, 사용자 미존재 스킵 {skipped_no_user}건, 활동 미존재 스킵 {skipped_no_activity}건")
+        total = len(to_insert)
+        affected_total = 0
+        batch_size = 1000
+        processed = 0
+        for batch in chunked(to_insert, batch_size):
+            affected = dev.execute_many(insert_sql, batch) or 0
+            affected_total += affected
+            processed += len(batch)
+            print_progress(processed, total, prefix="attendance(prod->dev)")
+        print(f"✅ attendance 마이그레이션 완료: 삽입/갱신 {affected_total}건, 사용자 미존재 스킵 {skipped_no_user}건, 활동 미존재 스킵 {skipped_no_activity}건")
         return True
     except Exception as e:
         print(f"❌ attendance prod->dev 마이그레이션 오류: {e}")
