@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------
+  # 리버스 프록시 (Nginx)
+  # ---------------------------------------------------------
+  nginx-proxy:
+    image: nginx:stable-alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # 호스트의 SSL 인증서 경로 마운트
+    restart: always
+    depends_on:
+      - tychicus-dev
+      - tychicus-prod
+      - tychicus-dashboard-dev
+      - tychicus-dashboard-prod
+    networks:
+      - isaac-bridge
+
+  # ---------------------------------------------------------
+  # 프론트엔드 서비스 (tychicus)
+  # ---------------------------------------------------------
+  tychicus-dev:
+    image: coramdeoyouth/tychicus:dev  # 실제 이미지명으로 변경
+    container_name: tychicus-dev
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    networks:
+      - isaac-bridge
+
+  tychicus-prod:
+    image: coramdeoyouth/tychicus:prod
+    container_name: tychicus-prod
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    networks:
+      - isaac-bridge
+
+  # ---------------------------------------------------------
+  # 대시보드 서비스 (tychicus-dashboard)
+  # ---------------------------------------------------------
+  tychicus-dashboard-dev:
+    image: coramdeoyouth/tychicus-dashboard:dev
+    container_name: tychicus-dashboard-dev
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    networks:
+      - isaac-bridge
+
+  tychicus-dashboard-prod:
+    image: coramdeoyouth/tychicus-dashboard:prod
+    container_name: tychicus-dashboard-prod
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    networks:
+      - isaac-bridge
+
+networks:
+  isaac-bridge:
+    driver: bridge
