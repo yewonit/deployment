@@ -1,6 +1,9 @@
-sudo certbot certonly --standalone \
-  --preferred-challenges http \
-  --http-01-address 0.0.0.0 \
-  -d attendance-dev.icoramdeo.com -d attendance.icoramdeo.com -d ym-back.icoramdeo.com \
-  --renew-with-new-domains \
-  --webroot-path /var/www/certbot
+# 플러그인 설치 (Ubuntu 기준)
+sudo apt update
+sudo apt install python3-certbot-dns-route53 -y
+
+# 인증서 발급 명령어
+sudo certbot certonly --dns-route53 \
+  -d attendance-dev.icoramdeo.com \
+  -d attendance.icoramdeo.com \
+  -d ym-back.icoramdeo.com
