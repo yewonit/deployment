@@ -1,3 +1,6 @@
-# 현재는 nginx 컨테이너 내부에서 관리 중
-# 추후에는 머신에서 관리 + volume 마운트 방식으로
-certbot certonly --nginx -d attendance-dev.icoramdeo.com -d attendance.icoramdeo.com -d ym-back.icoramdeo.com
+sudo certbot certonly --standalone \
+  --preferred-challenges http \
+  --http-01-address 0.0.0.0 \
+  -d attendance-dev.icoramdeo.com -d attendance.icoramdeo.com -d ym-back.icoramdeo.com \
+  --renew-with-new-domains \
+  --webroot-path /var/www/certbot

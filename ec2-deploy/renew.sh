@@ -1,0 +1,1 @@
+sudo certbot renew --webroot -w /var/www/certbot --post-hook "docker exec nginx-proxy nginx -s reload"
