@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------
+  # 리버스 프록시 (Nginx)
+  # ---------------------------------------------------------
+  nginx-proxy:
+    image: nginx:stable-alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # 호스트의 SSL 인증서 경로 마운트
+    restart: always
+    depends_on:
+      - attendance-dev
+      - attendance
+      - ym-back
+      - account
+      - redis
+    networks:
+      - isaac-bridge
+
+  # ---------------------------------------------------------
+  # 백엔드 서비스 (attendance)
+  # ---------------------------------------------------------
+  attendance-dev:
+    image: coramdeoyouth/attendance:dev
+    container_name: attendance-dev
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    networks:
+      - isaac-bridge
+
+  attendance:
+    image: coramdeoyouth/attendance:prod
+    container_name: attendance
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 400M
+    networks:
+      - isaac-bridge
+
+  account:
+    image: coramdeoyouth/account:latest
+    container_name: account
+    restart: unless-stopped
+    ports:
+        - "30000:30000"
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+    networks:
+      - isaac-bridge
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+    networks:
+      - isaac-bridge
+
+  # ---------------------------------------------------------
+  # 백엔드 서비스 (ym-back)
+  # ---------------------------------------------------------
+  ym-back:
+    image: coramdeoyouth/ym-library-back:latest
+    container_name: ym-back
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+    networks:
+      - isaac-bridge
+
+networks:
+  isaac-bridge:
+    driver: bridge
