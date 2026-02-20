@@ -31,6 +31,14 @@ services:
     image: coramdeoyouth/attendance:dev
     container_name: attendance-dev
     restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-region: "ap-northeast-2"
+        awslogs-group: "attendance"
+        awslogs-stream: "dev"
     deploy:
       resources:
         limits:
@@ -42,6 +50,14 @@ services:
     image: coramdeoyouth/attendance:prod
     container_name: attendance
     restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    logging:
+      driver: "awslogs"
+      options:
+        awslogs-region: "ap-northeast-2"
+        awslogs-group: "attendance"
+        awslogs-stream: "prod"
     deploy:
       resources:
         limits:
