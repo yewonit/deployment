@@ -55,6 +55,9 @@ services:
     image: coramdeoyouth/tychicus-dashboard:dev
     container_name: tychicus-dashboard-dev
     restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_ENV=development
     deploy:
       resources:
         limits:
