@@ -12,4 +12,5 @@ sudo certbot certonly --dns-route53 \
   -d tychicus-dev.icoramdeo.com \
   -d tychicus.icoramdeo.com \
   -d tychicus-dashboard-dev.icoramdeo.com \
-  -d tychicus-dashboard.icoramdeo.com
+  -d tychicus-dashboard.icoramdeo.com \
+  -d tychicus-newcomer.icoramdeo.com
