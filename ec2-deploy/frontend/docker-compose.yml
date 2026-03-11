@@ -76,6 +76,17 @@ services:
     networks:
       - isaac-bridge
 
+  tychicus-newcomer-prod:
+    image: coramdeoyouth/tychicus-newcomer:prod
+    container_name: tychicus-newcomer-prod
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+    networks:
+      - isaac-bridge
+
 networks:
   isaac-bridge:
     driver: bridge
