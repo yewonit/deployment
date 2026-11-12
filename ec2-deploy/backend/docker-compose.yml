@@ -19,7 +19,6 @@ services:
       - attendance-dev
       - attendance
       - ym-back
-      - account
       - redis
     networks:
       - isaac-bridge
@@ -62,19 +61,6 @@ services:
       resources:
         limits:
           memory: 400M
-    networks:
-      - isaac-bridge
-
-  account:
-    image: coramdeoyouth/account:latest
-    container_name: account
-    restart: unless-stopped
-    ports:
-        - "30000:30000"
-    deploy:
-      resources:
-        limits:
-          memory: 150M
     networks:
       - isaac-bridge
 
